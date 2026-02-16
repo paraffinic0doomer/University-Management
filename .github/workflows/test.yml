@@ -14,6 +14,7 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       # Step 1: Checkout the repository
@@ -40,9 +41,9 @@ jobs:
       - name: Build with Maven
         run: mvn clean compile -DskipTests
 
-      # Step 5: Run all tests
+      # Step 5: Run all tests with test profile (uses H2, skips Docker Compose)
       - name: Run tests
-        run: mvn test
+        run: mvn test -Dspring.profiles.active=test -Dspring.docker.compose.enabled=false
 
       # Step 6: Upload test results
       - name: Upload test results
@@ -68,6 +69,7 @@ jobs:
     name: Code Quality Check
     runs-on: ubuntu-latest
     needs: build-and-test
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
